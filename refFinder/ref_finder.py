@@ -1,25 +1,31 @@
 """Finds supporting references for manuscript."""
+from tqdm import tqdm
+import re
 from sys import argv
 # from nltk.tokenize import wordpunct_tokenize
 from nltk.probability import FreqDist
 from nltk.corpus import stopwords
+from nltk.tokenize import sent_tokenize, word_tokenize
 from PyPDF2 import PdfFileReader
 # from pathlib import Path
 import os
 import glob
 
 
-def get_words(firstfile, secondfile):
+def find_refs(sentence, ref_file):
     """Count occurences in second file of intersection of words in 2 files."""
     try:
+
+        # Using list instead of file for parameter
+        # So this part isn't needed
         # Opens text file and splits it into lists of words
-        with open(firstfile, 'r') as ff:  # , open(secondfile, 'r') as sf:
-            ff_words = ff.read().split()
-            #        sf_words = sf.read().split()
-            ff.close()
+        # with open(sentence, 'r') as ff:  # , open(ref_file, 'r') as sf:
+        #     ff_words = ff.read().split()
+        #     #        sf_words = sf.read().split()
+        #     ff.close()
 
         # Read pdf file
-        sf = PdfFileReader(secondfile)
+        sf = PdfFileReader(ref_file)
         sf_pages = []
 
         # Extract pdf and split into words
@@ -32,7 +38,7 @@ def get_words(firstfile, secondfile):
 
         # Creates list of intersection of words in the 2 lists
         intersection_words = [
-            word for word in ff_words if (word in sf_words)
+            word for word in sentence if (word in sf_words)
             and (word not in set(stopwords.words('english')))]
 
         # Dictionary of frequency of each intersected word,
@@ -44,24 +50,25 @@ def get_words(firstfile, secondfile):
         # Number of words matched
         length_fd = len(fd)
 
+        # Set name of file
+        path_list = re.split(r'\/+', ref_file)
+        file_name = path_list[-1]
+
         # Writes fd, total_matches, length_fd to output file
         with open('output.txt', 'a') as output:
-            lines = [secondfile, ":", "\n",
-                     "Number of words matched: ", str(length_fd), "\n",
+            lines = ['\n', "Reference: ", file_name, "\n",
                      "Total matches: ", str(total_matches), "\n",
+                     "Number of words matched: ", str(length_fd), "\n",
                      "Words matched: "]
             output.writelines(lines)
-            output.close()
 
         with open('output.txt', 'a') as output:
             # output.write(str(fd.most_common(20)))
             output.write(', '.join("{}: {}".format(k, v)
                                    for k, v in fd.items()))
-            output.close()
 
         with open('output.txt', 'a') as output:
             output.write('\n')
-            output.close()
 
     except IOError:
         print("Could not read from file")
@@ -75,24 +82,23 @@ def main():
 
     try:
         # Opens text file and convert to string
-        # TODO: Iterate over many sentences
         # TODO: Make into function outside of main
         with open(firstfile, 'r') as ff:  # , open(secondfile, 'r') as sf:
             ff_str = ff.read().replace("\n", " ")
 
-        # Writes contents of input text file (1 sentence for now) to output.txt
-        # TODO: Make into function outside of main
-        with open('output.txt', 'w') as output:
-            lines = [ff_str, "\n", "\n"]
-            output.writelines(lines)
-            output.close()
+        # List of list of string: Each sentence has list of words.
+        ff_sentences = [word_tokenize(word) for word in sent_tokenize(ff_str)]
 
         # Creates a list of paths
         files = glob.glob(os.path.join(directory, '*.pdf'))
 
         # Iterate through list of paths and call get_words
-        for file in files:
-            get_words(firstfile, file)
+        for sentence in tqdm(ff_sentences):
+            with open('output.txt', 'a') as output:
+                lines = ['\n', "\n", ' '.join(sentence), "\n"]
+                output.writelines(lines)
+            for file in files:
+                find_refs(sentence, file)
 
     except IOError:
         print("Could not read from file")
