@@ -40,6 +40,16 @@ def find_refs(sentence, ref_file):
         intersection_words = [
             word for word in sentence if (word in sf_words)
             and (word not in set(stopwords.words('english')))]
+        # Create list of intersecting numbers
+        ff_nums = []
+        for grapheme in sentence:
+            try:
+                if float(grapheme):
+                    ff_nums.append(grapheme)
+            except ValueError:
+                continue
+
+        intersection_nums = [num for num in ff_nums if (num in sf_words)]
 
         # Dictionary of frequency of each intersected word,
         # discarding common words
@@ -57,6 +67,7 @@ def find_refs(sentence, ref_file):
         # Writes fd, total_matches, length_fd to output file
         with open('output.txt', 'a') as output:
             lines = ['\n', "Reference: ", file_name, "\n",
+                     "Numbers matched: ", str(intersection_nums), "\n",
                      "Total matches: ", str(total_matches), "\n",
                      "Number of words matched: ", str(length_fd), "\n",
                      "Words matched: "]
@@ -91,6 +102,10 @@ def main():
 
         # Creates a list of paths
         files = glob.glob(os.path.join(directory, '*.pdf'))
+
+        # Start writing file.
+        with open('output.txt', 'w') as output:
+            output.write("***OUTPUT OF COMPARISON OF MANUSCRIPT AND REFERENCE(S)*** \n \n")
 
         # Iterate through list of paths and call get_words
         for sentence in tqdm(ff_sentences):
