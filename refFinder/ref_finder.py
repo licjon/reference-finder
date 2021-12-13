@@ -12,18 +12,49 @@ import os
 import glob
 
 
-def find_refs(sentence, ref_file):
-    """Count occurences in second file of intersection of words in 2 files."""
+def read_manuscript(manuscript):
     try:
+        # Opens text file and convert to string
+        with open(manuscript, 'r') as ff:  # , open(secondfile, 'r') as sf:
+            manuscript_string = ff.read().replace("\n", " ")
 
-        # Using list instead of file for parameter
-        # So this part isn't needed
-        # Opens text file and splits it into lists of words
-        # with open(sentence, 'r') as ff:  # , open(ref_file, 'r') as sf:
-        #     ff_words = ff.read().split()
-        #     #        sf_words = sf.read().split()
-        #     ff.close()
+        return manuscript_string
+    except IOError:
+        print("Could not read from file")
+        exit(1)
 
+
+def init_comparison(manuscript_string, refs_path):
+    try:
+        # List of list of string: Each sentence has list of words.
+        manuscript_sentences = [
+            word_tokenize(word) for word in sent_tokenize(manuscript_string)]
+
+        # Creates a list of paths
+        files = glob.glob(os.path.join(refs_path, '*.pdf'))
+
+        # Start writing file.
+        with open('output.txt', 'w') as output:
+            output.write(
+                "***OUTPUT OF COMPARISON OF MANUSCRIPT AND REFERENCE(S)*** \n \n")
+
+        # Write each manuscript sentence and call find_refs with each sentence,
+        # iterating through each PDF
+        for sentence in tqdm(manuscript_sentences):
+            with open('output.txt', 'a') as output:
+                lines = ['\n', "\n", ' '.join(sentence), "\n"]
+                output.writelines(lines)
+            for file in files:
+                find_refs(sentence, file)
+
+    except IOError:
+        print("Could not read from file")
+        exit(1)
+
+
+def find_refs(sentence, ref_file):
+    """Count occurences in reference file of intersection of words in 2 files."""
+    try:
         # Read pdf file
         sf = PdfFileReader(ref_file)
         sf_pages = []
@@ -40,6 +71,7 @@ def find_refs(sentence, ref_file):
         intersection_words = [
             word for word in sentence if (word in sf_words)
             and (word not in set(stopwords.words('english')))]
+
         # Create list of intersecting numbers
         ff_nums = []
         for grapheme in sentence:
@@ -64,6 +96,16 @@ def find_refs(sentence, ref_file):
         path_list = re.split(r'\/+', ref_file)
         file_name = path_list[-1]
 
+        write_results(
+            file_name, intersection_nums, total_matches, length_fd, fd)
+
+    except IOError:
+        print("Could not read from file")
+        exit(1)
+
+
+def write_results(file_name, intersection_nums, total_matches, length_fd, fd):
+    try:
         # Writes fd, total_matches, length_fd to output file
         with open('output.txt', 'a') as output:
             lines = ['\n', "Reference: ", file_name, "\n",
@@ -82,42 +124,18 @@ def find_refs(sentence, ref_file):
             output.write('\n')
 
     except IOError:
-        print("Could not read from file")
+        print("Could not append to file")
         exit(1)
 
 
 def main():
     """Do the main function."""
     # Arguments. Run "python ref_finder.py file.txt ~/path/to/pdf/directory"
-    script, firstfile, directory = argv
+    _, manuscript, refs_path = argv
 
-    try:
-        # Opens text file and convert to string
-        # TODO: Make into function outside of main
-        with open(firstfile, 'r') as ff:  # , open(secondfile, 'r') as sf:
-            ff_str = ff.read().replace("\n", " ")
+    manuscript_string = read_manuscript(manuscript)
 
-        # List of list of string: Each sentence has list of words.
-        ff_sentences = [word_tokenize(word) for word in sent_tokenize(ff_str)]
-
-        # Creates a list of paths
-        files = glob.glob(os.path.join(directory, '*.pdf'))
-
-        # Start writing file.
-        with open('output.txt', 'w') as output:
-            output.write("***OUTPUT OF COMPARISON OF MANUSCRIPT AND REFERENCE(S)*** \n \n")
-
-        # Iterate through list of paths and call get_words
-        for sentence in tqdm(ff_sentences):
-            with open('output.txt', 'a') as output:
-                lines = ['\n', "\n", ' '.join(sentence), "\n"]
-                output.writelines(lines)
-            for file in files:
-                find_refs(sentence, file)
-
-    except IOError:
-        print("Could not read from file")
-        exit(1)
+    init_comparison(manuscript_string, refs_path)
 
 
 if __name__ == "__main__":
