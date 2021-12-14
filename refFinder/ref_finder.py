@@ -1,5 +1,6 @@
 """Finds supporting references for manuscript."""
-from tqdm import tqdm
+import multiprocessing as mp
+# from tqdm import tqdm # For progress bar (not needed w/ mp)
 import re
 from sys import argv
 # from nltk.tokenize import wordpunct_tokenize
@@ -15,8 +16,8 @@ import glob
 def read_manuscript(manuscript):
     try:
         # Opens text file and convert to string
-        with open(manuscript, 'r') as ff:  # , open(secondfile, 'r') as sf:
-            manuscript_string = ff.read().replace("\n", " ")
+        with open(manuscript, 'r') as manuscript:
+            manuscript_string = manuscript.read().replace("\n", " ")
 
         return manuscript_string
     except IOError:
@@ -38,14 +39,22 @@ def init_comparison(manuscript_string, refs_path):
             output.write(
                 "***OUTPUT OF COMPARISON OF MANUSCRIPT AND REFERENCE(S)*** \n \n")
 
-        # Write each manuscript sentence and call find_refs with each sentence,
-        # iterating through each PDF
-        for sentence in tqdm(manuscript_sentences):
+        # Create the same number of processes as there are CPUs
+        num_processes = mp.cpu_count()
+
+        # Global is used to prevent local object pickling error
+        global wrapper
+
+        # Write each manuscript sentence and call find_refs with each sentence.
+        # Use a pool instead of iterating through each PDF.
+        for sentence in manuscript_sentences:
             with open('output.txt', 'a') as output:
                 lines = ['\n', "\n", ' '.join(sentence), "\n"]
                 output.writelines(lines)
-            for file in files:
-                find_refs(sentence, file)
+            def wrapper(file):
+                return find_refs(sentence, file)
+            with mp.Pool(processes=num_processes) as pool:
+                pool.map(wrapper, files)
 
     except IOError:
         print("Could not read from file")
@@ -56,36 +65,36 @@ def find_refs(sentence, ref_file):
     """Count occurences in reference file of intersection of words in 2 files."""
     try:
         # Read pdf file
-        sf = PdfFileReader(ref_file)
-        sf_pages = []
+        ref = PdfFileReader(ref_file)
+        ref_pages = []
 
         # Extract pdf and split into words
         # (list of list is a page (list) of a list of string)
-        for page in sf.pages:
-            sf_pages.append(page.extractText().split())
+        for page in ref.pages:
+            ref_pages.append(page.extractText().split())
 
-        # Creates list of words in pdf
-        sf_words = [word for page in sf_pages for word in page]
+        # Flattens list of page of words to list of words
+        ref_words = [word for page in ref_pages for word in page]
 
         # Creates list of intersection of words in the 2 lists
         intersection_words = [
-            word for word in sentence if (word in sf_words)
-            and (word not in set(stopwords.words('english')))]
+            word for word in sentence if (word in ref_words)
+            and (word.lower() not in set(stopwords.words('english')))]
 
         # Create list of intersecting numbers
-        ff_nums = []
+        manuscript_nums = []
         for grapheme in sentence:
             try:
                 if float(grapheme):
-                    ff_nums.append(grapheme)
+                    manuscript_nums.append(grapheme)
             except ValueError:
                 continue
 
-        intersection_nums = [num for num in ff_nums if (num in sf_words)]
+        intersection_nums = [num for num in manuscript_nums if (num in ref_words)]
 
         # Dictionary of frequency of each intersected word,
         # discarding common words
-        fd = FreqDist(word for word in sf_words if word in intersection_words)
+        fd = FreqDist(word for word in ref_words if word in intersection_words)
 
         total_matches = sum(fd.values())
 
