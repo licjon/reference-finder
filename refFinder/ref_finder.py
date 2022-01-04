@@ -1,33 +1,41 @@
 """Finds supporting references for manuscript."""
+import pickle
 import multiprocessing as mp
-# from tqdm import tqdm # For progress bar (not needed w/ mp)
+from tqdm import tqdm
 import re
 from sys import argv
-# from nltk.tokenize import wordpunct_tokenize
 from nltk.probability import FreqDist
 from nltk.corpus import stopwords
 from nltk.tokenize import sent_tokenize, word_tokenize
 from PyPDF2 import PdfFileReader
-# from pathlib import Path
+from pathlib import Path
 import os
 import glob
 
 
+MY_STOPWORDS = stopwords.words('english')
+newStopWords = ['+', '*', '.', '=', ',', '(', ')', '[', ']', 'p']
+MY_STOPWORDS.extend(newStopWords)
+
+
 def read_manuscript(manuscript):
+    """Read text file and return string of contents."""
     try:
         # Opens text file and convert to string
         with open(manuscript, 'r') as manuscript:
             manuscript_string = manuscript.read().replace("\n", " ")
 
         return manuscript_string
+
     except IOError:
-        print("Could not read from file")
+        print("read_manuscript: Could not read from file")
         exit(1)
 
 
 def init_comparison(manuscript_string, refs_path):
+    """Initialize comparison."""
     try:
-        # List of list of string: Each sentence has list of words.
+        # List of list of strings: Each sentence has list of words.
         manuscript_sentences = [
             word_tokenize(word) for word in sent_tokenize(manuscript_string)]
 
@@ -46,26 +54,44 @@ def init_comparison(manuscript_string, refs_path):
         global wrapper
 
         # Write each manuscript sentence and call find_refs with each sentence.
-        # Use a pool instead of iterating through each PDF.
-        for sentence in manuscript_sentences:
+        # tqdm times the iterations.
+        for sentence in tqdm(manuscript_sentences):
             with open('output.txt', 'a') as output:
                 lines = ['\n', "\n", ' '.join(sentence), "\n"]
                 output.writelines(lines)
+
+        # Use a thread pool to speed up the reading of PDFs.
             def wrapper(file):
                 return find_refs(sentence, file)
             with mp.Pool(processes=num_processes) as pool:
                 pool.map(wrapper, files)
 
     except IOError:
-        print("Could not read from file")
+        print("init_comparison: Could not read from file")
         exit(1)
 
 
 def find_refs(sentence, ref_file):
-    """Count occurences in reference file of intersection of words in 2 files."""
+    """Find intersecting words and numbers."""
     try:
-        # Read pdf file
-        ref = PdfFileReader(ref_file)
+        # TODO Pickling seems to be unnecessary
+        # ref_name = Path(ref_file).stem
+        pickle_path = Path(ref_file).with_suffix(".p")
+        # pickle_name = ref_name + ".p"
+
+        if pickle_path.is_file():
+            # If pickled file is there, load it
+            with open(pickle_path, 'rb') as pf:
+                ref = pickle.load(pf)
+        else:
+            # Read pdf file if file is not pickled
+            ref = PdfFileReader(ref_file)
+            # path.dirname(ref_file)
+
+            # Pickle file
+            with open(pickle_path, 'wb') as f:
+                pickle.dump(ref, f)
+
         ref_pages = []
 
         # Extract pdf and split into words
@@ -74,12 +100,15 @@ def find_refs(sentence, ref_file):
             ref_pages.append(page.extractText().split())
 
         # Flattens list of page of words to list of words
-        ref_words = [word for page in ref_pages for word in page]
+        # Strip % signs
+        ref_words = [word.strip("%") for page in ref_pages for word in page]
 
+        # regex = r"(?<!\d)[.,;:*=+](?!\d)"
+        # sentence_nopunc = re.sub(regex, "", sentence, 0)
         # Creates list of intersection of words in the 2 lists
         intersection_words = [
             word for word in sentence if (word in ref_words)
-            and (word.lower() not in set(stopwords.words('english')))]
+            and (word.lower() not in set(MY_STOPWORDS))]
 
         # Create list of intersecting numbers
         manuscript_nums = []
@@ -90,7 +119,8 @@ def find_refs(sentence, ref_file):
             except ValueError:
                 continue
 
-        intersection_nums = [num for num in manuscript_nums if (num in ref_words)]
+        intersection_nums = [
+            num for num in manuscript_nums if (num in ref_words)]
 
         # Dictionary of frequency of each intersected word,
         # discarding common words
@@ -101,7 +131,7 @@ def find_refs(sentence, ref_file):
         # Number of words matched
         length_fd = len(fd)
 
-        # Set name of file
+        # Get file name
         path_list = re.split(r'\/+', ref_file)
         file_name = path_list[-1]
 
@@ -109,11 +139,12 @@ def find_refs(sentence, ref_file):
             file_name, intersection_nums, total_matches, length_fd, fd)
 
     except IOError:
-        print("Could not read from file")
+        print("find_refs: Could not read from file")
         exit(1)
 
 
 def write_results(file_name, intersection_nums, total_matches, length_fd, fd):
+    """Write results of comparisons to output text file."""
     try:
         # Writes fd, total_matches, length_fd to output file
         with open('output.txt', 'a') as output:
@@ -133,7 +164,7 @@ def write_results(file_name, intersection_nums, total_matches, length_fd, fd):
             output.write('\n')
 
     except IOError:
-        print("Could not append to file")
+        print("write_results: Could not append to file")
         exit(1)
 
 
