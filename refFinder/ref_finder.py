@@ -74,24 +74,8 @@ def init_comparison(manuscript_string, refs_path):
 def find_refs(sentence, ref_file):
     """Find intersecting words and numbers."""
     try:
-        # TODO Pickling seems to be unnecessary
-        # ref_name = Path(ref_file).stem
-        pickle_path = Path(ref_file).with_suffix(".p")
-        # pickle_name = ref_name + ".p"
-
-        if pickle_path.is_file():
-            # If pickled file is there, load it
-            with open(pickle_path, 'rb') as pf:
-                ref = pickle.load(pf)
-        else:
-            # Read pdf file if file is not pickled
-            ref = PdfFileReader(ref_file)
-            # path.dirname(ref_file)
-
-            # Pickle file
-            with open(pickle_path, 'wb') as f:
-                pickle.dump(ref, f)
-
+        # Read pdf file
+        ref = PdfFileReader(ref_file)
         ref_pages = []
 
         # Extract pdf and split into words
