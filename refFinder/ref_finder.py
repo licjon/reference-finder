@@ -1,4 +1,5 @@
 """Finds supporting references for manuscript."""
+from read_manuscript import read_manuscript
 import pickle
 import multiprocessing as mp
 from tqdm import tqdm
@@ -18,18 +19,18 @@ newStopWords = ['+', '*', '.', '=', ',', '(', ')', '[', ']', 'p']
 MY_STOPWORDS.extend(newStopWords)
 
 
-def read_manuscript(manuscript):
-    """Read text file and return string of contents."""
-    try:
-        # Opens text file and convert to string
-        with open(manuscript, 'r') as manuscript:
-            manuscript_string = manuscript.read().replace("\n", " ")
+# def read_manuscript(manuscript):
+#     """Read text file and return string of contents."""
+#     try:
+#         # Opens text file and convert to string
+#         with open(manuscript, 'r') as manuscript:
+#             manuscript_string = manuscript.read().replace("\n", " ")
 
-        return manuscript_string
+#         return manuscript_string
 
-    except IOError:
-        print("read_manuscript: Could not read from file")
-        exit(1)
+#     except IOError:
+#         print("read_manuscript: Could not read from file")
+#         exit(1)
 
 
 def init_comparison(manuscript_string, refs_path):
@@ -159,6 +160,7 @@ def main():
 
     manuscript_string = read_manuscript(manuscript)
 
+    # TODO return value and assign to variable and continue calling functions in main
     init_comparison(manuscript_string, refs_path)
 
 
