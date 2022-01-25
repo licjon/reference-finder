@@ -3,10 +3,11 @@
 from write_results import write_results
 from intersected_word_frequency import intersected_word_frequency
 from intersection_numbers import intersection_numbers
-from get_pdf_sentences import get_pdf_sentence
+from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance
 from read_manuscript import read_manuscript
 from jaccard_similarity import jaccard_similarity
 # Libraries
+from nltk.tokenize import sent_tokenize, word_tokenize
 import multiprocessing as mp
 from tqdm import tqdm
 import re
@@ -61,7 +62,10 @@ def find_refs(sentence, ref_file):
         ref_words = [word.strip("%") for page in ref_pages for word in page]
 
         # get top scoring sentence with the Jaccard Score
-        top_scoring_sentence = get_pdf_sentence(sentence, ref_words)
+        top_scoring_sentence = get_jaccard_top_score(sentence, ref_words)
+
+        # get euclidean distance of sentence to entire ref
+        euclidean_distance = get_top_euclidean_distance(sentence, ref_words)
 
         # Get list of numbers shared by manuscript and reference
         intersection_nums = intersection_numbers(sentence, ref_words)
@@ -78,7 +82,7 @@ def find_refs(sentence, ref_file):
         file_name = path_list[-1]
 
         write_results(
-            file_name, intersection_nums, total_matches, length_fd, fd, top_scoring_sentence)
+            file_name, intersection_nums, total_matches, length_fd, fd, top_scoring_sentence, euclidean_distance)
 
     except IOError:
         print("find_refs: Could not read from file")
