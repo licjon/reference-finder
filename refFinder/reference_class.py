@@ -9,21 +9,18 @@ class Reference:
     def __init__(self, file):
 
         path_list = re.split(r'\/+', file)
+
         self.name = path_list[-1] 
         self.pdfobject = PdfFileReader(file)
 
-        count = self.pdfobject.numPages
-        self.pages = ''
-        for i in range(count):
-            page = self.pdfobject.getPage(i)
-            self.pages += page.extractText()
+        # The entire contents of the pdf in a string
+        self.string = ''
 
-        # I have 2 self.pages because the one below is a list and works for word and number matching 
-        # List of str, each item a string of pdf page's contents
-        self.pages_list = [
-            page.extractText().split() for page in self.pdfobject.pages ]
-
-        self.string = "".join(self.pages).replace('\n', '')
+        for page in self.pdfobject.pages:
+            page = page.extractText()
+            self.string += "".join(page).replace('\n', '')
+        
+        # self.string = "".join(self.pages).replace('\n', '')
         self.sentences = sent_tokenize(self.string)
         
         # Embeddings of sentences
@@ -33,8 +30,7 @@ class Reference:
         self.word_sentences = [ word_tokenize(word) for word in sent_tokenize(self.string) ]
 
         # A list of str, each item a word in the pdf
-        self.words = [ word.lower() for page in self.pages_list for word in page ]
+        self.words = word_tokenize(self.string) 
 
         # Same thing but without % to match text files
-        self.words_sans_percent = [
-            word.strip("%") for page in self.pages_list for word in page ]
+        self.words_sans_percent = [ word.strip("%") for word in self.words ]

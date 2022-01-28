@@ -3,7 +3,7 @@ from nltk.corpus import stopwords
 
 
 MY_STOPWORDS = stopwords.words('english')
-newStopWords = ['+', '*', '.', '=', ',', '(', ')', '[', ']', 'p']
+newStopWords = ['+', '*', '.', '=', ',', '(', ')', '[', ']', 'p', '%', ';']
 MY_STOPWORDS.extend(newStopWords)
 
 def intersected_word_frequency(sentence, ref_words):

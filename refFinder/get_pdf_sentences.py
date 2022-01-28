@@ -1,56 +1,39 @@
 import config
+from cos_similarity import cos_similarity
 from jaccard_similarity import jaccard_similarity
 from euclidean_distance import euclidean_distance
-from nltk.tokenize import sent_tokenize, word_tokenize
-from PyPDF2 import PdfFileReader
-
-def join_punctuation(seq, characters='.,;?!'):
-    characters = set(characters)
-    seq = iter(seq)
-    current = next(seq)
-
-    for nxt in seq:
-        if nxt in characters:
-            current += nxt
-        else:
-            yield current
-            current = nxt
-
-    yield current
 
 
 def get_jaccard_top_score(ms_sentence, ref_sentences, ref_word_sentences):
-    # sentence_lcase = [ word.lower() for word in sentence ]
     scores = []
-    # ref = " ".join(ref)
-    # ref_sentences = [word_tokenize(word.lower()) for word in sent_tokenize(ref)]
-    # sentence_list = []
 
     for sentence in ref_word_sentences:
         sentence = [ word.lower() for word in sentence ]
-        # sentence_list.append(" ".join(join_punctuation(sentence)))
         scores.append(jaccard_similarity(ms_sentence, sentence))
                                  
     top_scoring_sentence = sorted(zip(scores, ref_sentences), reverse=True)[0]
     return top_scoring_sentence
 
 
-def get_top_euclidean_distance(ms_sentence, ms_embeddings, ref_sentences):
+def get_top_euclidean_distance(ms_embeddings, ref_sentences):
     """ Get Euclidean distance and the top sentence matched using that score. """
-    # nlp = spacy.load('en_core_web_md')
-    # sentence_lcase = [ word.lower() for word in sentence ]
-    # sentence_string = " ".join(sentence_lcase)
-    # sentence_vector = nlp(" ".join(ms_sentence)).vector
     scores = []
-    # ref = " ".join(join_punctuation(ref))
-    # ref_sentences = sent_tokenize(ref)
-    # ref_sentences_vector = list(nlp.pipe(ref_sentences))
-    # print(type(sentence_vector))
-    # print(ref_sentences_vector)
-    # sentence_list = []
 
     for sentence in ref_sentences:
         scores.append(euclidean_distance(ms_embeddings, config.nlp(sentence).vector))
                                  
     top_scoring_sentence = sorted(zip(scores, ref_sentences), reverse=True)[0]
     return top_scoring_sentence
+
+def get_top_cos_similarity(ms_embeddings, ref_sentences):
+    """ TODO: refactor into 1 function with the metric fun passed as argument? """
+    scores = []
+
+    for sentence in ref_sentences:
+        scores.append(cos_similarity(ms_embeddings, config.nlp(sentence).vector))
+
+    top_scoring_sentence = sorted(zip(scores, ref_sentences), reverse=True)[0]
+    return top_scoring_sentence
+
+
+    

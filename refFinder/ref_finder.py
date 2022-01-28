@@ -5,17 +5,12 @@ from manuscript_class import Manuscript
 from write_results import write_results
 from intersected_word_frequency import intersected_word_frequency
 from intersection_numbers import intersection_numbers
-from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance
-from read_manuscript import read_manuscript
+from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance, get_top_cos_similarity
 from jaccard_similarity import jaccard_similarity
 # Libraries
-from nltk.tokenize import sent_tokenize, word_tokenize
 import multiprocessing as mp
 from tqdm import tqdm
-import re
 from sys import argv
-from PyPDF2 import PdfFileReader
-from pathlib import Path
 import os
 import glob
 
@@ -57,25 +52,13 @@ def find_refs(sentence, ms_embeddings, ref_file):
     try:
         ref = Reference(ref_file)
 
-        # Read pdf file
-        # ref = PdfFileReader(ref_file)
-
-        # Extract pdf and split into words
-        # (list of list is a page (list) of a list of string)
-        # ref_pages = []
-        # for page in ref.pages:
-            # ref_pages.append(page.extractText().split())
-
-        # Flattens list of page of words to list of words
-        # Strip % signs because text file splits number from % but pdf doesn't
-        # ref_words = [word.strip("%") for page in ref_pages for word in page]
-
         # Get top scoring sentence with the Jaccard Score
         top_scoring_sentence = get_jaccard_top_score(sentence, ref.sentences, ref.word_sentences)
 
-        # Get euclidean distance of sentence to entire ref
-        euclidean_distance = get_top_euclidean_distance(sentence, ms_embeddings, ref.sentences)
+        euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref.sentences)
 
+        cos_similarity = get_top_cos_similarity(ms_embeddings, ref.sentences)
+        
         # Get list of numbers shared by manuscript and reference
         intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
         
@@ -86,12 +69,8 @@ def find_refs(sentence, ms_embeddings, ref_file):
         # Number of words matched
         length_fd = len(fd)
 
-        # Get file name
-        # path_list = re.split(r'\/+', ref_file)
-        # file_name = path_list[-1]
-
         write_results(
-            ref.name, intersection_nums, total_matches, length_fd, fd, top_scoring_sentence, euclidean_distance)
+            ref.name, intersection_nums, total_matches, length_fd, fd, top_scoring_sentence, euclidean_distance, cos_similarity)
 
     except IOError:
         print("find_refs: Could not read from file")
@@ -106,8 +85,6 @@ def main():
         # Instantiate Manuscript class
         manuscript = Manuscript(manuscript)
 
-        # manuscript_sentences = read_manuscript(manuscript)
-        
         # Creates a list of paths
         files = glob.glob(os.path.join(refs_path, '*.pdf'))
         
