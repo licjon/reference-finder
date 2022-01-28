@@ -11,7 +11,7 @@ def intersected_word_frequency(sentence, ref_words):
     
     # Creates list of intersection of words in the 2 lists
     intersection_words = [
-        word for word in sentence if (word in ref_words)
+        word.lower() for word in sentence if (word.lower() in ref_words)
         and (word.lower() not in set(MY_STOPWORDS))]
 
     # Dictionary of frequency of each intersected word, discarding common words
