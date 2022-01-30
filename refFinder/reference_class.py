@@ -3,7 +3,7 @@ import re
 import config
 from PyPDF2 import PdfFileReader
 
-
+  
 class Reference:
 
     def __init__(self, file):
@@ -20,7 +20,7 @@ class Reference:
             page = page.extractText()
             self.string += "".join(page).replace('\n', '')
         
-        # self.string = "".join(self.pages).replace('\n', '')
+        # List of string, each string a sentence
         self.sentences = sent_tokenize(self.string)
         
         # Embeddings of sentences

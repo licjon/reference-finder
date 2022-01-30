@@ -1,11 +1,12 @@
 """Finds supporting references for manuscript."""
 # My modules
+from mydocument_class import MyDocument
 from reference_class import Reference
 from manuscript_class import Manuscript
 from write_results import write_results
 from intersected_word_frequency import intersected_word_frequency
 from intersection_numbers import intersection_numbers
-from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance, get_top_cos_similarity
+from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance, get_top_cos_similarity#, get_top_levenshtein_distance
 from jaccard_similarity import jaccard_similarity
 # Libraries
 import multiprocessing as mp
@@ -59,18 +60,20 @@ def find_refs(sentence, ms_embeddings, ref_file):
 
         cos_similarity = get_top_cos_similarity(ms_embeddings, ref.sentences)
         
+        # levenshtein_distance = get_top_levenshtein_distance(sentence, ref.sentences)
+        
         # Get list of numbers shared by manuscript and reference
-        intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
+        # intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
         
-        fd = intersected_word_frequency(sentence, ref.words)
+        # fd = intersected_word_frequency(sentence, ref.words)
         
-        total_matches = sum(fd.values())
+        # total_matches = sum(fd.values())
 
         # Number of words matched
-        length_fd = len(fd)
+        # length_fd = len(fd)
 
         write_results(
-            ref.name, intersection_nums, total_matches, length_fd, fd, top_scoring_sentence, euclidean_distance, cos_similarity)
+            ref.name, top_scoring_sentence, euclidean_distance, cos_similarity)
 
     except IOError:
         print("find_refs: Could not read from file")
@@ -83,7 +86,11 @@ def main():
         _, manuscript, refs_path = argv
         
         # Instantiate Manuscript class
-        manuscript = Manuscript(manuscript)
+        base, ext = os.path.splitext(manuscript)
+        if ext == ".txt":
+            manuscript = Manuscript(manuscript)
+        else:
+            manuscript = MyDocument(manuscript)
 
         # Creates a list of paths
         files = glob.glob(os.path.join(refs_path, '*.pdf'))
