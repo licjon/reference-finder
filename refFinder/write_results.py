@@ -3,14 +3,14 @@ def write_results(file_name, top_scoring_sentence, euclidean_distance, cos_simil
     try:
         # Writes fd, total_matches, length_fd to output file
         with open('output.txt', 'a') as output:
-            lines = ["\n", "Reference: ", file_name, "\n",
-                     "Jaccard Similarity: ", str(top_scoring_sentence[0]), "\n",
-                     str(top_scoring_sentence[1]), "\n", str(top_scoring_sentence[2]), "\n\n", 
-                     "Euclidean Distance: ", str(euclidean_distance[0]), "\n", 
-                     str(euclidean_distance[1]), "\n", str(euclidean_distance[2]),
-                     "\n\n",
-                     "Cos Similarity: ", str(cos_similarity[0]), "\n",
-                     str(cos_similarity[1]), "\n", str(cos_similarity[2]), "\n"
+            lines = ["\n", "Reference: ", file_name, "\n\n",
+                     "Jaccard Similarity: ", str(top_scoring_sentence), "\n\n",
+                     # str(top_scoring_sentence[1]), "\n", str(top_scoring_sentence[2]), "\n\n", 
+                     "Euclidean Distance: ", str(euclidean_distance), "\n\n", 
+                     # str(euclidean_distance[1]), "\n", str(euclidean_distance[2]),
+                     # "\n\n",
+                     "Cos Similarity: ", str(cos_similarity), "\n\n",
+                     # str(cos_similarity[1]), "\n", str(cos_similarity[2]), "\n"
                      # "Numbers matched: ",
                      # str(intersection_nums), "\n\n",
                      # "Total matches: ", str(total_matches), "\n",

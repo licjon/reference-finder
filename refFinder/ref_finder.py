@@ -45,7 +45,7 @@ def init_comparison(manuscript, files):
 
     except IOError:
         print("init_comparison: Could not read/write file")
-        exit(1)
+        pass
 
 
 def find_refs(sentence, ms_embeddings, ref_file):
@@ -53,30 +53,37 @@ def find_refs(sentence, ms_embeddings, ref_file):
     try:
         ref = Reference(ref_file)
 
-        # Get top scoring sentence with the Jaccard Score
-        top_scoring_sentence = get_jaccard_top_score(sentence, ref.sentences, ref.word_sentences)
+        # Check if pdf got read. 
+        if not ref.sentences:
+            with open('output.txt', 'a') as output:
+                output.write('{} cannot be read \n'.format(ref.name))
+            return 0
 
-        euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref.sentences)
+        else:
+            # Get top scoring sentence with the Jaccard Score
+            top_scoring_sentence = get_jaccard_top_score(sentence, ref.sentences, ref.word_sentences)
 
-        cos_similarity = get_top_cos_similarity(ms_embeddings, ref.sentences)
-        
-        # levenshtein_distance = get_top_levenshtein_distance(sentence, ref.sentences)
-        
-        # Get list of numbers shared by manuscript and reference
-        # intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
-        
-        # fd = intersected_word_frequency(sentence, ref.words)
-        
-        # total_matches = sum(fd.values())
+            euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref.sentences)
 
-        # Number of words matched
-        # length_fd = len(fd)
+            cos_similarity = get_top_cos_similarity(ms_embeddings, ref.sentences)
+        
+            # levenshtein_distance = get_top_levenshtein_distance(sentence, ref.sentences)
+        
+            # Get list of numbers shared by manuscript and reference
+            # intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
+        
+            # fd = intersected_word_frequency(sentence, ref.words)
+        
+            # total_matches = sum(fd.values())
+
+            # Number of words matched
+            # length_fd = len(fd)
 
         write_results(
             ref.name, top_scoring_sentence, euclidean_distance, cos_similarity)
 
     except IOError:
-        print("find_refs: Could not read from file")
+        print("find_refs: could not read/write file.")
         exit(1)
 
 
