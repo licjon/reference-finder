@@ -4,14 +4,18 @@ import config
 
 
 class MyDocument:
-     # doc something like "dmd_manuscript.docx"
+     
+     # doc is "dmd_manuscript.docx" for example
      def __init__(self, doc):
+          
+          __slots__ = ['embeddings']
+
           # type: <class 'docx.document.Document'>
           self.doc = docx.Document(doc)
 
           # type: list of <class 'docx.text.paragraph.Paragraph'>
           self.all_paras = self.doc.paragraphs
-
+          
           # type: list of string
           self.para_list = [para.text for para in self.all_paras]
 
@@ -19,11 +23,11 @@ class MyDocument:
           self.sentences = self.__get_sentence_list()
 
           # List of sentences, each sentence a list of words
-          self.words = [
-            word_tokenize(word) for word in self.sentences ]
+          self.words = (
+            word_tokenize(word) for word in self.sentences )
 
-          self.embeddings = [
-               config.nlp(sentence).vector for sentence in self.sentences ]
+          self.embeddings = (
+               config.nlp(sentence).vector for sentence in self.sentences )
 
      def __get_sentence_list(self):
           sent_list = []

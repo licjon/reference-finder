@@ -9,6 +9,8 @@ from intersection_numbers import intersection_numbers
 from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance, get_top_cos_similarity#, get_top_levenshtein_distance
 from jaccard_similarity import jaccard_similarity
 # Libraries
+from pathlib import Path
+import _pickle as pickle
 import multiprocessing as mp
 from tqdm import tqdm
 from sys import argv
@@ -31,8 +33,8 @@ def init_comparison(manuscript, files):
 
         # Write each manuscript sentence to output.txt and call find_refs with each sentence.
         # tqdm times the iterations.
-        for i, sentence in tqdm(enumerate(manuscript_sentences)):
-            ms_embeddings = manuscript_embeddings[i] 
+        for sentence in tqdm(manuscript_sentences):
+            ms_embeddings = next(manuscript_embeddings) 
             with open('output.txt', 'a') as output:
                 lines = ['\n', "\n", ' '.join(sentence), "\n"]
                 output.writelines(lines)
@@ -51,37 +53,42 @@ def init_comparison(manuscript, files):
 def find_refs(sentence, ms_embeddings, ref_file):
     """Find intersecting words and numbers."""
     try:
+
         ref = Reference(ref_file)
 
+        ref_sentences = ref.sentences
+        
         # Check if pdf got read. 
-        if not ref.sentences:
+        if not ref_sentences:
             with open('output.txt', 'a') as output:
                 output.write('{} cannot be read \n'.format(ref.name))
             return 0
 
         else:
             # Get top scoring sentence with the Jaccard Score
-            top_scoring_sentence = get_jaccard_top_score(sentence, ref.sentences, ref.word_sentences)
+            top_scoring_sentence = get_jaccard_top_score(sentence, ref_sentences, ref.word_sentences)
 
-            euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref.sentences)
+            euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref_sentences)
 
-            cos_similarity = get_top_cos_similarity(ms_embeddings, ref.sentences)
+            cos_similarity = get_top_cos_similarity(ms_embeddings, ref_sentences)
         
-            # levenshtein_distance = get_top_levenshtein_distance(sentence, ref.sentences)
+            # levenshtein_distance = get_top_levenshtein_distance(sentence, ref_sentences)
         
             # Get list of numbers shared by manuscript and reference
-            # intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
+            intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
         
-            # fd = intersected_word_frequency(sentence, ref.words)
+            fd = intersected_word_frequency(sentence, ref.words)
         
-            # total_matches = sum(fd.values())
+            total_matches = sum(fd.values())
 
             # Number of words matched
-            # length_fd = len(fd)
+            length_fd = len(fd)
 
         write_results(
-            ref.name, top_scoring_sentence, euclidean_distance, cos_similarity)
+            ref.name, top_scoring_sentence, euclidean_distance, cos_similarity, intersection_nums, total_matches, length_fd, fd)
 
+        return 0
+    
     except IOError:
         print("find_refs: could not read/write file.")
         exit(1)
@@ -114,4 +121,10 @@ def main():
         exit(1)
 
 if __name__ == "__main__":
+    # import cProfile, pstats
+    # profiler = cProfile.Profile()
+    # profiler.enable()
     main()
+    # profiler.disable()
+    # stats = pstats.Stats(profiler).sort_stats('ncalls')
+    # stats.print_stats()
