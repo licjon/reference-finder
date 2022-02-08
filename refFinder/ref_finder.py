@@ -1,7 +1,7 @@
 """Finds supporting references for manuscript."""
 # My modules
 from mydocument_class import MyDocument
-from reference_class import Reference
+from reference_class import Reference, Reference_miner
 from manuscript_class import Manuscript
 from write_results import write_results
 from intersected_word_frequency import intersected_word_frequency
@@ -26,12 +26,13 @@ def init_comparison(manuscript, files):
 
         # list of list of string
         manuscript_sentences = manuscript.words
+        # word embeddings
         manuscript_embeddings = manuscript.embeddings
 
         # Global is used to prevent local object pickling error
         global wrapper
 
-        # Write each manuscript sentence to output.txt and call find_refs with each sentence.
+        # Write each manuscript sentence to output.txt and call vet_refs with each sentence.
         # tqdm times the iterations.
         for sentence in tqdm(manuscript_sentences):
             ms_embeddings = next(manuscript_embeddings) 
@@ -41,7 +42,7 @@ def init_comparison(manuscript, files):
 
         # Use a thread pool to speed up the reading of PDFs.
             def wrapper(file):
-                return find_refs(sentence, ms_embeddings, file)
+                return vet_refs(sentence, ms_embeddings, file)
             with mp.Pool(processes=num_processes) as pool:
                 pool.map(wrapper, files)
 
@@ -50,48 +51,61 @@ def init_comparison(manuscript, files):
         pass
 
 
-def find_refs(sentence, ms_embeddings, ref_file):
-    """Find intersecting words and numbers."""
+def vet_refs(sentence, ms_embeddings, ref_file):
+    """Pick the best method of reading the pdf or move to next ref if unreadable."""
     try:
-
         ref = Reference(ref_file)
 
         ref_sentences = ref.sentences
         
-        # Check if pdf got read. 
-        if not ref_sentences:
-            with open('output.txt', 'a') as output:
-                output.write('{} cannot be read \n'.format(ref.name))
-            return 0
+        # Check if PyPDF read the pdf properly. 
+        if not ref_sentences or len(ref.words[0]) > 15:
+            # If not, try again with pdfminer
+            ref = Reference_miner(ref_file)
+            ref_sentences = ref.sentences
+            # If that doesn't work, give up
+            if not ref_sentences or len(ref.words[0]) > 15:
+                with open('output.txt', 'a') as output:
+                    output.write('{} cannot be read \n'.format(ref.name))
+                return 0
+            # If it works, call get_refs w/ Reference_miner class
+            else: get_refs(sentence, ref, ms_embeddings)
 
         else:
-            # Get top scoring sentence with the Jaccard Score
-            top_scoring_sentence = get_jaccard_top_score(sentence, ref_sentences, ref.word_sentences)
+            get_refs(sentence, ref, ms_embeddings)
 
-            euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref_sentences)
-
-            cos_similarity = get_top_cos_similarity(ms_embeddings, ref_sentences)
-        
-            # levenshtein_distance = get_top_levenshtein_distance(sentence, ref_sentences)
-        
-            # Get list of numbers shared by manuscript and reference
-            intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
-        
-            fd = intersected_word_frequency(sentence, ref.words)
-        
-            total_matches = sum(fd.values())
-
-            # Number of words matched
-            length_fd = len(fd)
-
-        write_results(
-            ref.name, top_scoring_sentence, euclidean_distance, cos_similarity, intersection_nums, total_matches, length_fd, fd)
-
-        return 0
-    
     except IOError:
         print("find_refs: could not read/write file.")
         exit(1)
+
+
+def get_refs(sentence, ref, ms_embeddings):
+    """Collect different metrics and send them to be written in output file."""
+    ref_sentences = ref.sentences
+
+    # Get top scoring sentence with the Jaccard Score
+    top_scoring_sentence = get_jaccard_top_score(sentence, ref_sentences, ref.word_sentences)
+
+    euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref_sentences)
+
+    cos_similarity = get_top_cos_similarity(ms_embeddings, ref_sentences)
+        
+    # levenshtein_distance = get_top_levenshtein_distance(sentence, ref_sentences)
+        
+    # Get list of numbers shared by manuscript and reference
+    intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
+        
+    fd = intersected_word_frequency(sentence, ref.words)
+        
+    total_matches = sum(fd.values())
+
+    # Number of words matched
+    length_fd = len(fd)
+
+    write_results(
+        ref.name, top_scoring_sentence, euclidean_distance, cos_similarity, intersection_nums, total_matches, length_fd, fd)
+
+    return 0
 
 
 def main():

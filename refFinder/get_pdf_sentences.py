@@ -3,9 +3,7 @@ from cos_similarity import cos_similarity
 from jaccard_similarity import jaccard_similarity
 from euclidean_distance import euclidean_distance
 from itertools import zip_longest
-# import pdb
-# pdb.set_trace()
-# from nltk import edit_distance
+
 
 def get_jaccard_top_score(ms_sentence, ref_sentences, ref_word_sentences):
     scores = []
@@ -29,7 +27,6 @@ def get_top_euclidean_distance(ms_embeddings, ref_sentences):
     return top_scoring_sentence
 
 def get_top_cos_similarity(ms_embeddings, ref_sentences):
-    """ TODO: refactor into 1 function with the metric fun passed as argument? """
     scores = []
 
     for sentence in ref_sentences:
@@ -37,4 +34,3 @@ def get_top_cos_similarity(ms_embeddings, ref_sentences):
 
     top_scoring_sentence = sorted(zip(scores, ref_sentences), reverse=True)[0]
     return top_scoring_sentence
-
