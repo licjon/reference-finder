@@ -1,5 +1,7 @@
 """Finds supporting references for manuscript."""
 # My modules
+from store_ref import store_ref
+from check_db import check_db
 from mydocument_class import MyDocument
 from reference_class import Reference, Reference_miner
 from manuscript_class import Manuscript
@@ -9,6 +11,7 @@ from intersection_numbers import intersection_numbers
 from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance, get_top_cos_similarity#, get_top_levenshtein_distance
 from jaccard_similarity import jaccard_similarity
 # Libraries
+import json
 from pathlib import Path
 import _pickle as pickle
 import multiprocessing as mp
@@ -54,33 +57,47 @@ def init_comparison(manuscript, files):
 def vet_refs(sentence, ms_embeddings, ref_file):
     """Pick the best method of reading the pdf or move to next ref if unreadable."""
     try:
-        ref = Reference(ref_file)
+        # check if reference is stored, return boolean
+        # ref_file is str
+        is_stored = check_db(ref_file)
 
-        ref_sentences = ref.sentences
-        
-        # Check if PyPDF read the pdf properly. 
-        if not ref_sentences or len(ref.words[0]) > 15:
-            # If not, try again with pdfminer
-            ref = Reference_miner(ref_file)
-            ref_sentences = ref.sentences
-            # If that doesn't work, give up
-            if not ref_sentences or len(ref.words[0]) > 15:
-                with open('output.txt', 'a') as output:
-                    output.write('{} cannot be read \n'.format(ref.name))
-                return 0
-            # If it works, call get_refs w/ Reference_miner class
-            else: get_refs(sentence, ref, ms_embeddings)
-
+        if is_stored == True:
+            get_refs(sentence, ref_file, ms_embeddings, True)
+            return 0
         else:
-            get_refs(sentence, ref, ms_embeddings)
+            ref = Reference(ref_file)
+
+            ref_sentences = ref.sentences
+
+            # Check if PyPDF read the pdf properly. 
+            if not ref_sentences or len(ref.words[0]) > 15:
+                # If not, try again with pdfminer
+                ref = Reference_miner(ref_file)
+                ref_sentences = ref.sentences
+                # If that doesn't work, give up
+                if not ref_sentences or len(ref.words[0]) > 15:
+                    with open('output.txt', 'a') as output:
+                        output.write('{} cannot be read \n'.format(ref.name))
+                        return 0
+                # If it works, call get_refs w/ Reference_miner class
+                else: get_refs(sentence, ref_file, ms_embeddings, False)
+            else:
+                get_refs(sentence, ref_file, ms_embeddings, False)
 
     except IOError:
         print("find_refs: could not read/write file.")
         exit(1)
 
 
-def get_refs(sentence, ref, ms_embeddings):
+def get_refs(sentence, ref, ms_embeddings, is_stored):
     """Collect different metrics and send them to be written in output file."""
+    # will check is_stored and if true use json
+
+    if is_stored:
+        ref = Reference(ref) # will change to Reference_json
+    else:
+        ref = Reference(ref)
+
     ref_sentences = ref.sentences
 
     # Get top scoring sentence with the Jaccard Score
@@ -105,7 +122,13 @@ def get_refs(sentence, ref, ms_embeddings):
     write_results(
         ref.name, top_scoring_sentence, euclidean_distance, cos_similarity, intersection_nums, total_matches, length_fd, fd)
 
-    return 0
+    if is_stored == False:
+        print(str(is_stored))
+        print("json written")
+        store_ref(ref)
+        return 0
+    else:
+        return 0
 
 
 def main():
