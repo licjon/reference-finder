@@ -3,6 +3,7 @@ import json
 
 
 def check_db(ref_file):
+    """Returns dictionary if PDF found in json; returns None if not found."""
     file_path = Path(ref_file)
     file_name = file_path.stem
     
@@ -11,22 +12,17 @@ def check_db(ref_file):
 
     refs_dict = json.loads(refs_data)
         
-    # if any(file_name in refs_dict.values() for d in refs_dict.values()):
-    #     return True
-    # else:
-    #     print("false")
-    is_stored = False 
+    ref_dict = None 
     for key in refs_dict:
         # print(str(type(refs_dict[key])))
         for dic in refs_dict[key]:
-            print(str(dic["name"]))
-            # for ref_key in dic:
+            # print(str(dic["name"]))
             if (dic["name"]) == file_name:
-                print(file_name + " is true")
-                is_stored = True
+                # print(file_name + " is true")
+                ref_dict = dic
                 break
             else: continue
-            print(file_name + " is false")
-            is_stored = False
+            # print(file_name + " is false")
+            ref_dict = None
 
-    return is_stored
+    return ref_dict
