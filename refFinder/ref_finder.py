@@ -13,11 +13,10 @@ from check_db import check_db
 from manuscript_class import Manuscript
 from mydocument_class import MyDocument
 from reference_class import Reference, Reference_miner
-from init_comparison_db import init_comparison_db
 from get_refs import get_refs
 
 
-def init_comparison(manuscript, files, no_save, no_db):
+def init_comparison(manuscript, no_save, no_db, files = None):
     """Initialize comparison."""
     try:
         # Start writing file.
@@ -43,12 +42,23 @@ def init_comparison(manuscript, files, no_save, no_db):
             with open('output.txt', 'a') as output:
                 lines = ['\n', "\n", ' '.join(sentence), "\n"]
                 output.writelines(lines)
+            if files:
+                # Use a thread pool to speed up the reading of PDFs.
+                def wrapper(file):
+                    return vet_refs(sentence, ms_embeddings, file, no_save, no_db)
+                with mp.Pool(processes=num_processes) as pool:
+                    pool.map(wrapper, files)
+            else:
+                with open('references.json', 'r') as references:
+                    refs_data = references.read()
 
-        # Use a thread pool to speed up the reading of PDFs.
-            def wrapper(file):
-                return vet_refs(sentence, ms_embeddings, file, no_save, no_db)
-            with mp.Pool(processes=num_processes) as pool:
-                pool.map(wrapper, files)
+                refs_list = json.loads(refs_data)
+
+                # Use a thread pool to speed up the reading of json.
+                def wrapper(ref):
+                    return get_refs(sentence, ref, ms_embeddings, True, no_save, no_db)
+                with mp.Pool(processes=num_processes) as pool:
+                    pool.map(wrapper, refs_list)
 
     except IOError:
         print("init_comparison: Could not read/write file")
@@ -125,11 +135,6 @@ def main():
         else:
             refs_in_db = True
  
-        # If run without a path the first time, there should be an error
-        if not refs_path and not refs_in_db and not no_save:
-            print("Error: need file path")
-            exit(1)
-
         # Instantiate Manuscript class
         _, ext = os.path.splitext(manuscript)
         if ext == ".txt":
@@ -144,16 +149,17 @@ def main():
         # With just the file, using stored refs: file
         if not refs_path and refs_in_db and not no_db and not no_db:
             print("Using database with no new refs.")
-            init_comparison_db(manuscript, no_save, no_db)
+            init_comparison(manuscript, no_save, no_db)
         # With new refs (that are stored if not in database) that may or may not be in the database: file path [--nosave --nodb]
         elif refs_path:
             print("Using new refs. Maybe there are refs in the database. Maybe save.")
-            init_comparison(manuscript, files, no_save, no_db)
+            init_comparison(manuscript, no_save, no_db, files)
         elif not refs_path and no_db:
             print("Error: No file path was provided.")
+        elif not refs_path and not refs_in_db:
+            print("Error: Database is empty. Please include path to file(s).")
         else:
             print("Please report issue to [github url]")
-            exit(1)
                     
     except IOError:
         print("main: could not read/write file.")
