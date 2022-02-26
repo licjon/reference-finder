@@ -1,3 +1,7 @@
+""" run in python repl. 
+    Example: match_sentence("Enzalutamide plus androgen-deprivation therapy was associated with a significant 27% lower risk of death than placebo plus androgen-deprivation therapy (hazard ratio, 0.73; 95% CI, 0.61 to 0.89; P = 0.001).", "/home/jh/projects/python/text_projects/refFinder/three_refs/Sternberg.pdf") """
+
+
 from PyPDF2 import PdfFileReader
 from nltk.tokenize import sent_tokenize, word_tokenize
 
@@ -19,7 +23,6 @@ def match_sentence(sentence, path):
         # List of string, each string a sentence
         sentences = sent_tokenize(pdf_string)
 
-        for ref_sentence in sentences:
-            if sentence == ref_sentence:
-                return True
+        match = [ ref_sentence for ref_sentence in sentences if sentence == ref_sentence ]
 
+        return match

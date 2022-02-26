@@ -4,6 +4,7 @@ import json
 
 def check_db(ref_file):
     """Returns dictionary if PDF found in json; returns None if not found."""
+    # TODO Try search algorithm?
     file_path = Path(ref_file)
     file_name = file_path.stem
     
@@ -11,18 +12,19 @@ def check_db(ref_file):
         refs_data = references.read()
 
     refs_dict = json.loads(refs_data)
-        
-    ref_dict = None 
-    for key in refs_dict:
-        # print(str(type(refs_dict[key])))
-        for dic in refs_dict[key]:
-            # print(str(dic["name"]))
-            if (dic["name"]) == file_name:
-                # print(file_name + " is true")
-                ref_dict = dic
-                break
-            else: continue
-            # print(file_name + " is false")
-            ref_dict = None
+    # ref_dict = None 
+    front = 0
+    back = len(refs_dict) - 1
 
-    return ref_dict
+    # Front and back search for reference in json
+    if refs_dict != []:
+        while front <= back:
+            middle = (front + back) // 2
+            midpoint = refs_dict[middle]
+            if midpoint["name"] > file_name:
+                back = middle - 1
+            elif midpoint["name"] < file_name:
+                front = middle + 1
+            else:
+                return midpoint
+

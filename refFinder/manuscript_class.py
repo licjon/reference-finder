@@ -18,6 +18,7 @@ class Manuscript:
         self.words = (
             word_tokenize(word) for word in self.sentences )
 
+        # Generator of embeddings of the words for each sentence.
         self.embeddings = ( config.nlp(sentence).vector for sentence in self.sentences )
 
     def __read_file(self, file):

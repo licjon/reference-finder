@@ -22,7 +22,7 @@ class MyDocument:
           # type: list of list of string
           self.sentences = self.__get_sentence_list()
 
-          # List of sentences, each sentence a list of words
+          # Generator of sentences, each sentence a list of words
           self.words = (
             word_tokenize(word) for word in self.sentences )
 
