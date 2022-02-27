@@ -1,21 +1,22 @@
 import docx
+
 from nltk.tokenize import sent_tokenize, word_tokenize
+
 import config
 
 
 class MyDocument:
-     
+
      # doc is "dmd_manuscript.docx" for example
      def __init__(self, doc):
-          
-          __slots__ = ['embeddings']
+          __slots__ = ["embeddings"]
 
           # type: <class 'docx.document.Document'>
           self.doc = docx.Document(doc)
 
           # type: list of <class 'docx.text.paragraph.Paragraph'>
           self.all_paras = self.doc.paragraphs
-          
+
           # type: list of string
           self.para_list = [para.text for para in self.all_paras]
 
@@ -24,10 +25,10 @@ class MyDocument:
 
           # Generator of sentences, each sentence a list of words
           self.words = (
-            word_tokenize(word) for word in self.sentences )
+               word_tokenize(word) for word in self.sentences)
 
           self.embeddings = (
-               config.nlp(sentence).vector for sentence in self.sentences )
+               config.nlp(sentence).vector for sentence in self.sentences)
 
      def __get_sentence_list(self):
           sent_list = []
@@ -42,7 +43,6 @@ class MyDocument:
 
           for para in sent_list:
                for sentence in para:
-                   sentence_list.append(sentence) 
+                   sentence_list.append(sentence)
 
           return sentence_list
-                    

@@ -37,7 +37,7 @@ def init_comparison_db(manuscript, no_save, no_db):
                 lines = ['\n', "\n", ' '.join(sentence), "\n"]
                 output.writelines(lines)
 
-        # Use a thread pool to speed up the reading of PDFs.
+        # Use a thread pool to speed up the reading of json.
             def wrapper(ref):
                 return get_refs(sentence, ref, ms_embeddings, True, no_save, no_db)
             with mp.Pool(processes=num_processes) as pool:
