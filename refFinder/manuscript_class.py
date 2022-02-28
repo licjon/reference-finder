@@ -11,10 +11,10 @@ class Manuscript:
 
         self.string = self.__read_file(file)
 
-        # List of string, each string a sentence
+        # List of string, each string a sentence.
         self.sentences = sent_tokenize(self.string)
 
-        # Generator of sentences, each sentence is a list of words
+        # Generator of sentences, each sentence is a list of words.
         self.words = (
             word_tokenize(word) for word in self.sentences )
 

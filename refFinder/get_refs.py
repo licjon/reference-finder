@@ -1,6 +1,10 @@
 import json
 
-from get_pdf_sentences import get_jaccard_top_score, get_top_euclidean_distance, get_top_cos_similarity
+from itertools import zip_longest
+
+from cos_similarity import cos_similarity
+from euclidean_distance import euclidean_distance
+from get_pdf_sentences import get_jaccard_top_score
 from intersected_word_frequency import intersected_word_frequency
 from intersection_numbers import intersection_numbers
 from manuscript_class import Manuscript
@@ -22,10 +26,22 @@ def get_refs(sentence, ref, ms_embeddings, is_stored, no_save, no_db):
     top_scoring_sentence = get_jaccard_top_score(sentence,
                                                  ref_sentences,
                                                  ref.word_sentences)
-    euclidean_distance = get_top_euclidean_distance(ms_embeddings,
-                                                    ref_sentences)
-    cos_similarity = get_top_cos_similarity(ms_embeddings,
-                                            ref_sentences)
+
+    # Since embeddings are generators and need to be used twice,
+    # bind each embedding and call the 2 funs below w/ it
+    euclidean_scores = []
+    cos_scores = []
+    for x in ref.sentences:
+        ref_embeddings = next(ref.embeddings)
+        euclidean_scores.append(euclidean_distance(ms_embeddings,
+                                         ref_embeddings))
+        cos_scores.append(cos_similarity(ms_embeddings,
+                                         ref_embeddings))
+     
+    euclidean_distance_result = sorted(zip(euclidean_scores, ref_sentences), reverse=True)[0]
+    cos_similarity_result = sorted(zip(cos_scores, ref_sentences), reverse=True)[0]
+        # euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref_embeddings
+        # cos_similarity = get_top_cos_similarity(ms_embeddings, ref_embeddings, ref_sentences)
 
     # Get list of numbers shared by manuscript and reference.
     intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)
@@ -39,7 +55,7 @@ def get_refs(sentence, ref, ms_embeddings, is_stored, no_save, no_db):
 
     write_results(
         ref.name, top_scoring_sentence,
-        euclidean_distance, cos_similarity,
+        euclidean_distance_result, cos_similarity_result,
         intersection_nums, total_matches,
         length_fd, fd)
 

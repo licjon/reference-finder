@@ -1,4 +1,6 @@
-"""Finds supporting references for manuscript."""
+"""Find supporting references for manuscript.
+   Arguments: file (txt or docx) and 3 optional arguments:
+   path --nosave --nodb"""
 
 import argparse
 import glob
@@ -28,8 +30,7 @@ def init_comparison(manuscript, no_save, no_db, files = None):
     # word embeddings
     manuscript_embeddings = manuscript.embeddings
 
-    # Write each manuscript sentence to output.txt
-    # and call vet_refs with each sentence.
+    # Write each manuscript sentence to output.txt.
     # tqdm times the iterations.
     for sentence in tqdm(manuscript_sentences):
         ms_embeddings = next(manuscript_embeddings)
@@ -44,7 +45,7 @@ def init_comparison(manuscript, no_save, no_db, files = None):
             with ProcessPool() as pool:
                 pool.map(wrapper, files)
         else:
-            # Use a thread pool to speed up the reading of json.
+            # Same as above but with json and calls get_refs.
             with open("references.json", 'r') as references:
                 refs_data = references.read()
             refs_list = json.loads(refs_data)
@@ -58,7 +59,7 @@ def init_comparison(manuscript, no_save, no_db, files = None):
 def vet_refs(sentence, ms_embeddings, ref_file, no_save, no_db):
     """Pick the best method of reading the pdf or
        move to next ref if unreadable."""
-        # return dictionary if reference is stored, else return None
+    # return dictionary if reference is stored, else return None
     is_stored = check_db(ref_file) # ref_file is str
 
     if is_stored and not no_db:
@@ -119,7 +120,9 @@ def main():
     # Check if json is empty
     with open("references.json", 'r') as references:
         refs_data = references.read()
+
     refs_dict = json.loads(refs_data)
+
     if len(refs_dict) == 0:
         refs_in_db = False
     else:
@@ -127,13 +130,14 @@ def main():
 
     # Instantiate Manuscript class
     _, ext = os.path.splitext(manuscript)
+
     if ext == ".txt":
         manuscript = Manuscript(manuscript)
     else:
         manuscript = MyDocument(manuscript)
 
     if refs_path is not None:
-        # Creates a list of paths
+        # Create a list of paths.
         files = glob.glob(os.path.join(refs_path, "*.pdf"))
 
     # With just the file, using stored refs: file

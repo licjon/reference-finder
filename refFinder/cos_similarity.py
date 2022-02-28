@@ -7,7 +7,7 @@ def squared_sum(x):
   return round(sqrt(sum([a * a for a in x])), 3)
 
 
-def cos_similarity(x,y):
+def cos_similarity(x, y):
   """ Return cosine similarity between two lists.
       Exact match has score of 1.0.
   """

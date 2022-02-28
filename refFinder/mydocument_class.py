@@ -7,7 +7,7 @@ import config
 
 class MyDocument:
 
-     # doc is "dmd_manuscript.docx" for example
+     # doc is "dmd_manuscript.docx" for example.
      def __init__(self, doc):
           __slots__ = ["embeddings"]
 
@@ -23,7 +23,7 @@ class MyDocument:
           # type: list of list of string
           self.sentences = self.__get_sentence_list()
 
-          # Generator of sentences, each sentence a list of words
+          # Generator of sentences, each sentence a list of words.
           self.words = (
                word_tokenize(word) for word in self.sentences)
 

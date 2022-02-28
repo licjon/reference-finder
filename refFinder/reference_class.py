@@ -1,5 +1,7 @@
 import json
 
+import config
+
 from PyPDF2 import PdfFileReader
 from nltk.tokenize import sent_tokenize, word_tokenize
 from pathlib import Path
@@ -34,6 +36,9 @@ class Reference:
         # Same thing but without % to match text files.
         self.words_sans_percent = (word.strip('%') for word in self.words)
 
+        self.embeddings = (
+            config.nlp(sentence).vector for sentence in self.sentences)
+
 
 class ReferenceMiner:
 
@@ -53,6 +58,8 @@ class ReferenceMiner:
             word_tokenize(word) for word in sent_tokenize(self.string))
         self.words = word_tokenize(self.string)
         self.words_sans_percent = (word.strip('%') for word in self.words)
+        self.embeddings = (
+            config.nlp(sentence).vector for sentence in self.sentences)
 
 
 class ReferenceJson:
@@ -67,3 +74,5 @@ class ReferenceJson:
         self.word_sentences = (word_tokenize(word) for word in self.sentences)
         self.words = file["words"]
         self.words_sans_percent = (word.strip('%') for word in self.words)
+        self.embeddings = (
+            config.nlp(sentence).vector for sentence in self.sentences)
