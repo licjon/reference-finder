@@ -5,7 +5,7 @@ def write_results(file_name, top_scoring_sentence, euclidean_distance,
     # Writes fd, total_matches, length_fd to output file
     with open("output.txt", 'a') as output:
         lines = [
-            '\n', "Reference: ", file_name, "\n\n",
+            "\n\n", "Reference: ", file_name, "\n\n",
             "Jaccard Similarity: ", str(top_scoring_sentence), "\n\n",
             "Euclidean Distance: ", str(euclidean_distance), "\n\n", 
             "Cos Similarity: ", str(cos_similarity), "\n\n",

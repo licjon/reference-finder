@@ -4,7 +4,7 @@ from itertools import zip_longest
 
 from cos_similarity import cos_similarity
 from euclidean_distance import euclidean_distance
-from get_pdf_sentences import get_jaccard_top_score
+from jaccard import get_jaccard_top_score
 from intersected_word_frequency import intersected_word_frequency
 from intersection_numbers import intersection_numbers
 from manuscript_class import Manuscript
