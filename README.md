@@ -1,7 +1,4 @@
 
-
-
-
 <a id="orgd414e7e"></a>
 
 # What is Reference Finder?
@@ -62,7 +59,7 @@
 
 <a id="orgac3c093"></a>
 
-## ref<sub>finder.py</sub> is run from the command line. cd into the directory that has ref<sub>finder.py</sub>. Your manuscript (txt or docx) and subdirectory of PDFs should be in the same directory but don't have to be.
+## ref_finder.py is run from the command line. cd into the directory that has ref_finder.py. Your manuscript (txt or docx) and subdirectory of PDFs should be in the same directory but don't have to be.
 
 
 <a id="orgb73b856"></a>
@@ -141,7 +138,7 @@
 
 <a id="orge2994de"></a>
 
-## Example includes example<sub>manuscript.txt</sub> that contains 4 sentences. The PDFs are in the example<sub>refs</sub> folder. The folder contains example1.pdf and example2.pdf.
+## Example includes example_manuscript.txt that contains 4 sentences. The PDFs are in the example_refs folder. The folder contains example1.pdf and example2.pdf.
 
 
 <a id="org140c04d"></a>
@@ -151,7 +148,7 @@
 
 <a id="org7288076"></a>
 
-## Run `python3 ref_finder.py example_manuscript.txt path/to/example_refs/` from the directory ref<sub>finder.py</sub> is in
+## Run `python3 ref_finder.py example_manuscript.txt path/to/example_refs/` from the directory ref_finder.py is in
 
 
 <a id="orgeed8432"></a>
