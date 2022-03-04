@@ -63,4 +63,5 @@
 ** Sentence 3
 *** This is another example of less than optimal behavior: example2 has 3 matching sentences even though the scores are lower than normal (Jaccard Index of 0.2 usually does not support). This is probably because another sentence has glommed onto it.  
 ** Sentence 4 clearly shows strong support from example2
-** After running the example, example1 and example2 will be stored into the json. Delete them and leave just the "[]" before running the program with your won files.
+** After running the example, example1 and example2 will be stored into the json. Delete them and leave just the "[]" before running the program with your own files.
+
