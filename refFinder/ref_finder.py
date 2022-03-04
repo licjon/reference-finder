@@ -82,7 +82,7 @@ def main():
     elif not refs_path and not refs_in_db:
         print("Error: Database is empty. Please include path to file(s).")
     else:
-        print("Please report issue to [github url]")
+        print("Please report issue to https://github.com/licjon/reference-finder/issues")
 
 
 if __name__ == "__main__":
