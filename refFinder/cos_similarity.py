@@ -10,6 +10,7 @@ def squared_sum(x):
 def cos_similarity(x, y):
   """ Return cosine similarity between two lists.
       Exact match has score of 1.0.
+      From https://newscatcherapi.com/blog/ultimate-guide-to-text-similarity-with-python.
   """
   numerator = sum(a * b for a, b in zip(x, y))
   denominator = squared_sum(x) * squared_sum(y)

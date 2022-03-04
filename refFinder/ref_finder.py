@@ -1,6 +1,8 @@
 """Find supporting references for manuscript.
    Arguments: file (txt or docx) and 3 optional arguments:
-   path --nosave --nodb
+   path (only optional after running once without --nosave flag)
+   --nosave
+   --nodb
 """
 
 import argparse

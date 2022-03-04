@@ -53,6 +53,7 @@ def vet_refs(sentence, ms_embeddings, ref_file, no_save, no_db):
     is_stored = check_db(ref_file) # ref_file is str
 
     if is_stored and not no_db:
+        # Use json
         get_refs(sentence, is_stored, ms_embeddings, True, no_save, no_db)
     else:
         ref = Reference(ref_file)
@@ -72,6 +73,7 @@ def vet_refs(sentence, ms_embeddings, ref_file, no_save, no_db):
                 get_refs(sentence, ref, ms_embeddings, True, no_save, no_db)
             else: get_refs(sentence, ref, ms_embeddings, False, no_save,
                            no_db)
+        # Use Reference class
         elif no_db:
             get_refs(sentence, ref, ms_embeddings, True, no_save, no_db)
         else:
