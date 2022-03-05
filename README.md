@@ -33,7 +33,7 @@
 ## Examples
 
 Running a docx file in another directory and using all references in the json: 
-``` bash
+```bash
 python3 ref_finder.py ~/path/to/file.docx
 ```
 
@@ -43,7 +43,7 @@ python3 ref_finder.py ~/path/to/file.docx
 - Doesn't save the references to the json file.
 - Even though it doesn't make sense to run this without a file path, it will still run but uses the json file.
 - Example:  
-``` bash
+```bash
 python3 ref_finder.py file.docx ~/path/to/folder/ --nosave
  ```
 
@@ -52,7 +52,7 @@ python3 ref_finder.py file.docx ~/path/to/folder/ --nosave
 - &#x2013;nodb will not work unless a filepath is provided.
 - A situation where this could be useful is if you have a large json file but only want to use a few PDFs. It will run faster.
 : Example:  
-``` bash
+```bash
 python3 ref_finder.py file.txt ~/path/to/folder/ --nodb
 ```
 
