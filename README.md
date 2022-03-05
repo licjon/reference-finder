@@ -1,4 +1,4 @@
-# Reference Finder?
+# Reference Finder
 
  Reference Finder will compare each sentence in the manuscript to each reference and help you find which reference supports the sentence in the manuscript as well as provide sentences from each reference that are most likely to give support.
 
