@@ -1,0 +1,134 @@
+***OUTPUT OF COMPARISON OF MANUSCRIPT AND REFERENCE(S)*** 
+ 
+
+
+The Jaccard index , also known as the Jaccard similarity coefficient , is a measure to evaluate similarity between 2 finite sample sets .
+
+
+Reference: example1
+
+Jaccard Similarity: (0.35294117647058826, 'Jaccard SimilarityThe Jaccard index[13], commonly called the Jaccard simi-larity coefﬁcient, is a set-theoretic measure to genericallyevaluate similarity between two ﬁnite sample sets.')
+
+Euclidean Distance: (0.3623241379932102, 'This is in contrast to the cosine similarity measurein the conventional contrastive learning model, which accountsfor correlation information.')
+
+Cos Similarity: (0.939, 'This is in contrast to the cosine similarity measurein the conventional contrastive learning model, which accountsfor correlation information.')
+
+Numbers matched: ['2']
+
+Total matches: 106
+Number of words matched: 8
+Words matched: 2: 46, similarity: 30, measure: 11, also: 7, sample: 5, sets: 4, index: 2, evaluate: 1
+
+
+Reference: example2
+
+Jaccard Similarity: (0.17073170731707318, 'The similarity runtime(how long it takes to evaluate the model since no training is required) is shown in seconds, the classiﬁcation runtime(how long it takes to ﬁne-tune and evaluate the model) in hours, minutes, and seconds.')
+
+Euclidean Distance: (0.33161554811408067, 'Note that the similarities are closer toeach other than the classiﬁcation values, therefore wechose a different scale.The primary observation is that the accuracyscores of classiﬁcation and similarity are corre-lated.')
+
+Cos Similarity: (0.922, 'Note that the similarities are closer toeach other than the classiﬁcation values, therefore wechose a different scale.The primary observation is that the accuracyscores of classiﬁcation and similarity are corre-lated.')
+
+Numbers matched: ['2']
+
+Total matches: 39
+Number of words matched: 5
+Words matched: also: 6, similarity: 17, 2: 11, sets: 2, evaluate: 3
+
+
+All of the neural networks were trained with a batch size of 256 on the Tiony-Imagenet dataset and a batch size of 512 for 500 epochs on CIFAR-10 and CIFAR-100 datasets .
+
+
+Reference: example1
+
+Jaccard Similarity: (0.5666666666666667, 'All neural networks aretrained with a batch size of 512 for 500 epochs on both CIFAR-10 and CIFAR-100 datasets and a batch size of 256 on theTiny-Imagenet dataset.')
+
+Euclidean Distance: (0.6832852072060662, 'All neural networks aretrained with a batch size of 512 for 500 epochs on both CIFAR-10 and CIFAR-100 datasets and a batch size of 256 on theTiny-Imagenet dataset.')
+
+Cos Similarity: (0.991, 'All neural networks aretrained with a batch size of 512 for 500 epochs on both CIFAR-10 and CIFAR-100 datasets and a batch size of 256 on theTiny-Imagenet dataset.')
+
+Numbers matched: ['256']
+
+Total matches: 25
+Number of words matched: 11
+Words matched: datasets: 8, trained: 2, dataset: 4, neural: 2, networks: 1, batch: 2, size: 2, 512: 1, 500: 1, epochs: 1, 256: 1
+
+
+Reference: example2
+
+Jaccard Similarity: (0.25, 'In Proceedings of the 43rd Interna-tional ACM SIGIR Conference on Research and De-velopment in Information Retrieval, SIGIR ’20.A Model HyperparametersAll models were trained for 3 epochs with a weightdecay of 0.01.')
+
+Euclidean Distance: (0.3778821796449598, 'For trainingthe classiﬁer we used the maximum batch size thatﬁt on the GPU (which is different for different sizedmodels, ranging between 12 and 128).')
+
+Cos Similarity: (0.933, 'For trainingthe classiﬁer we used the maximum batch size thatﬁt on the GPU (which is different for different sizedmodels, ranging between 12 and 128).')
+
+Numbers matched: []
+
+Total matches: 23
+Number of words matched: 7
+Words matched: dataset: 3, trained: 5, epochs: 3, batch: 4, size: 5, neural: 1, networks: 2
+
+
+Abductive reasoning is at the core of human understanding .
+
+
+Reference: example1
+
+Jaccard Similarity: (0.21428571428571427, 'The distribution of the ﬂora in the alpinezone.')
+
+Euclidean Distance: (0.24197479186873344, 'These observationsreﬂect the fact that latent representations of a complex datasetFig.')
+
+Cos Similarity: (0.905, 'These observationsreﬂect the fact that latent representations of a complex datasetFig.')
+
+Numbers matched: []
+
+Total matches: 0
+Number of words matched: 0
+Words matched: 
+
+
+Reference: example2
+
+Jaccard Similarity: (0.21875, 'Abductive reasoning is there-fore at the core of the way humans understand theworld and how world knowledge is involved.Abductive reasoning in the natural language do-main has been introduced by Bhagavatula et al.')
+
+Euclidean Distance: (0.2820411355335424, 'Abductive reasoning is there-fore at the core of the way humans understand theworld and how world knowledge is involved.Abductive reasoning in the natural language do-main has been introduced by Bhagavatula et al.')
+
+Cos Similarity: (0.928, 'Abductive reasoning is there-fore at the core of the way humans understand theworld and how world knowledge is involved.Abductive reasoning in the natural language do-main has been introduced by Bhagavatula et al.')
+
+Numbers matched: []
+
+Total matches: 18
+Number of words matched: 5
+Words matched: abductive: 4, reasoning: 9, core: 1, human: 1, understanding: 3
+
+
+Performance prediction estimates the performance of a system without running it .
+
+
+Reference: example1
+
+Jaccard Similarity: (0.21052631578947367, '1 provides a high-level and intuitivedescription of the proposed rationale.')
+
+Euclidean Distance: (0.1874030786667961, 'We have reproducedthe results of the two benchmarks.We show in Table 1 the complexity, i.e., the running time,of our model compared with SimCLR.')
+
+Cos Similarity: (0.904, 'The recording time shows ourmodel takes 1.1 times of SimCLR running time in CIFARdatasets and 1.01 times of it in the Tiny-Imagenet-200 dataset.Fig.2 shows the encoders’ performance curves of SimCLR andour model based on the k-NN method w.r.t the training epoch.We can observe that our model’s encoder demonstrates quitea convincing learning speed compared with the conventionalmodel with the same learning rate setup.DatasetSimCLROur modelCIFAR1m36s/epoch1m47s/epochTiny-Imagenet-20013m51s/epoch14m01s/epochTable 1.')
+
+Numbers matched: []
+
+Total matches: 12
+Number of words matched: 4
+Words matched: performance: 7, without: 2, running: 2, system: 1
+
+
+Reference: example2
+
+Jaccard Similarity: (0.45, 'The task of perfor-mance prediction is to estimate the performance ofa speciﬁc system without explicitly running it.')
+
+Euclidean Distance: (0.26377259545285964, 'The task of perfor-mance prediction is to estimate the performance ofa speciﬁc system without explicitly running it.')
+
+Cos Similarity: (0.941, 'The task of perfor-mance prediction is to estimate the performance ofa speciﬁc system without explicitly running it.')
+
+Numbers matched: []
+
+Total matches: 46
+Number of words matched: 5
+Words matched: without: 4, performance: 22, prediction: 18, system: 1, running: 1

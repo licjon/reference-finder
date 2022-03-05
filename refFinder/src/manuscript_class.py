@@ -6,8 +6,7 @@ import config
 class Manuscript:
 
     def __init__(self, file):
-        # Uncomment slots if memory becomes an issue. Slows down program.
-        # __slots__ = ["string", "sentences", "words", "embeddings"]
+        __slots__ = ["string", "sentences", "words", "embeddings"]
 
         self.string = self.__read_file(file)
 
@@ -16,7 +15,7 @@ class Manuscript:
 
         # Generator of sentences, each sentence is a list of words.
         self.words = (
-            word_tokenize(word) for word in self.sentences )
+            word_tokenize(word) for word in self.sentences)
 
         # Generator of embeddings of the words for each sentence.
         self.embeddings = (

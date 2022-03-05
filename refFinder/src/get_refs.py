@@ -40,8 +40,6 @@ def get_refs(sentence, ref, ms_embeddings, is_stored, no_save, no_db):
      
     euclidean_distance_result = sorted(zip(euclidean_scores, ref_sentences), reverse=True)[0]
     cos_similarity_result = sorted(zip(cos_scores, ref_sentences), reverse=True)[0]
-        # euclidean_distance = get_top_euclidean_distance(ms_embeddings, ref_embeddings
-        # cos_similarity = get_top_cos_similarity(ms_embeddings, ref_embeddings, ref_sentences)
 
     # Get list of numbers shared by manuscript and reference.
     intersection_nums = intersection_numbers(sentence, ref.words_sans_percent)

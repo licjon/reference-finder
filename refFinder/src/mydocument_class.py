@@ -25,7 +25,7 @@ class MyDocument:
 
           # Generator of sentences, each sentence a list of words.
           self.words = (
-               word_tokenize(word) for word in self.sentences)
+               word_tokenize(word.replace('\n', ' ')) for word in self.sentences)
 
           self.embeddings = (
                config.nlp(sentence).vector for sentence in self.sentences)

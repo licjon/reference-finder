@@ -1,5 +1,5 @@
-from nltk.probability import FreqDist
 from nltk.corpus import stopwords
+from nltk.probability import FreqDist
 
 
 MY_STOPWORDS = stopwords.words('english')

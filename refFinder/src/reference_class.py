@@ -22,13 +22,13 @@ class Reference:
         self.string = ''
         for page in self.pdfobject.pages:
             page = page.extractText()
-            self.string += ''.join(page).replace('\n', '')
+            self.string += ''.join(page).replace('\n', ' ')
 
         # List of string, each string a sentence.
         self.sentences = sent_tokenize(self.string)
 
         # Generator of sentences (list of words).
-        self.word_sentences = (word_tokenize(word) for word in sent_tokenize(self.string))
+        self.word_sentences = (word_tokenize(word) for word in self.sentences)
 
         # A list of str, each item a word in the pdf.
         self.words = word_tokenize(self.string)
@@ -53,9 +53,9 @@ class ReferenceMiner:
 
         # Extract text with pdfminer.
         self.string = extract_text(file_name)
-        self.sentences = sent_tokenize(self.string.replace('\n', ''))
+        self.sentences = sent_tokenize(self.string.replace('\n', ' '))
         self.word_sentences = (
-            word_tokenize(word) for word in sent_tokenize(self.string))
+            word_tokenize(word) for word in self.sentences)
         self.words = word_tokenize(self.string)
         self.words_sans_percent = (word.strip('%') for word in self.words)
         self.embeddings = (
@@ -71,7 +71,7 @@ class ReferenceJson:
 
         self.name = file["name"]
         self.sentences = file["sentences"]
-        self.word_sentences = (word_tokenize(word) for word in self.sentences)
+        self.word_sentences = (word_tokenize(word.replace('\n', ' ')) for word in self.sentences)
         self.words = file["words"]
         self.words_sans_percent = (word.strip('%') for word in self.words)
         self.embeddings = (
