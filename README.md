@@ -14,11 +14,11 @@
 
 - 1-3 sentences that may closely match the sentence in the given text file. These are determined by:
 
-1.  Jaccard similarity
+    1.  Jaccard similarity
 
-2.  Euclidean distance
+    2.  Euclidean distance
 
-3.  Cosine similarity
+    3.  Cosine similarity
 
  The application I thought of for this program was to find supporting references for a manuscript, hence the name Reference Finder. The manuscript is the text file (.txt) or Word doc file (.docx). References are PDF files. But this can be used for any purpose that requires matching sentences in a text or word file to text in PDFs.
 
@@ -32,23 +32,32 @@
 
 ## Examples
 
-Running a docx file in another directory and using all references in the json: `python3 ref_finder.py ~/path/to/file.docx`
+Running a docx file in another directory and using all references in the json: 
+``` bash
+python3 ref_finder.py ~/path/to/file.docx
+```
 
 ### Some optional flags are:
 
 &#x2013;nosave
-: Doesn't save the references to the json file.
-: Even though it doesn't make sense to run this without a file path, it will still run but uses the json file.
-: Example:  `python3 ref_finder.py file.docx ~/path/to/folder/ --nosave`
+- Doesn't save the references to the json file.
+- Even though it doesn't make sense to run this without a file path, it will still run but uses the json file.
+- Example:  
+``` bash
+python3 ref_finder.py file.docx ~/path/to/folder/ --nosave
+ ```
 
 &#x2013;nodb
-: Doesn't use the json file and reads the PDFs.
-: &#x2013;nodb will not work unless a filepath is provided.
-: A situation where this could be useful is if you have a large json file but only want to use a few PDFs. It will run faster.
-: Example:  `python3 ref_finder.py file.txt ~/path/to/folder/ --nodb`
+- Doesn't use the json file and reads the PDFs.
+- &#x2013;nodb will not work unless a filepath is provided.
+- A situation where this could be useful is if you have a large json file but only want to use a few PDFs. It will run faster.
+: Example:  
+``` bash
+python3 ref_finder.py file.txt ~/path/to/folder/ --nodb
+```
 
 &#x2013;help
-: Display help
+- Displays help
 
 ## Limitations
 
