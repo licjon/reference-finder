@@ -59,7 +59,7 @@ python3 ref_finder.py file.docx ~/path/to/folder/ --nosave
 - Doesn't use the json file and reads the PDFs.
 - --nodb will not work unless a filepath is provided.
 - A situation where this could be useful is if you have a large json file but only want to use a few PDFs. It will run faster.
-: Example: 
+- Example: 
 ```bash
 python3 ref_finder.py file.txt ~/path/to/folder/ --nodb
 ```
