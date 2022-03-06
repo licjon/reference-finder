@@ -34,7 +34,7 @@
 
 5. Your manuscript (txt or docx) and subdirectory of PDFs should be in the src directory but don't have to be.
 
-6. Run `python3 ref_finder.py file_name.txt path/to/pdf/folder/`. If your manuscript file is in another directory, then enter the path to the file (including the file name) instead of just the file name.
+6. cd into the src directory and run `python3 ref_finder.py file_name.txt path/to/pdf/folder/`. If your manuscript file is in another directory, then enter the path to the file (including the file name) instead of just the file name.
 
 7. After you run it the first time, the PDFs are stored in a json file. If you want to use those references again, you can run the same command but without the path to the references folder. If you have many references stored in the json, but only want to compare select references, use a path to a directory with those references, and it will just use those references (it uses the file names to search for them in the json file).
 
