@@ -63,6 +63,6 @@ python3 ref_finder.py file.txt ~/path/to/folder/ --nodb
 
 The PDF files must be searchable PDFs. If not, try to use optical character recognition to make a searchable PDF before using Reference Finder. The PDF file format has a broad specification and is not designed for data exchange. This makes PDFs particularly hard to read. Reference Finder used PyPDF2, and if that fails, PDFMiner, and may output a message that the PDF is not readable. Even then, some PDFs will return unreadable garbage (Of the 70 PDFs that I tested, 4 were not readable at all). This will hopefully be addressed in a later version. A possible approach would be to read XML/ePub versions of the articles as XML is machine readable, with the hopes that XML will surpass PDF as the predominant format for online publications.
 
-#False negatives
+# False negatives
 
 Supporting information that is in a table or graph will probably not be read and matched.
