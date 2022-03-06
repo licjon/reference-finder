@@ -39,30 +39,30 @@ python3 ref_finder.py ~/path/to/file.docx
 
 ### Some optional flags are:
 
-&#x2013;nosave
+`--nosave`
 - Doesn't save the references to the json file.
 - Even though it doesn't make sense to run this without a file path, it will still run but uses the json file.
-- Example:  
+- Example: 
 ```bash
 python3 ref_finder.py file.docx ~/path/to/folder/ --nosave
  ```
 
-&#x2013;nodb
+`--nodb`
 - Doesn't use the json file and reads the PDFs.
-- &#x2013;nodb will not work unless a filepath is provided.
+- --nodb will not work unless a filepath is provided.
 - A situation where this could be useful is if you have a large json file but only want to use a few PDFs. It will run faster.
-: Example:  
+: Example: 
 ```bash
 python3 ref_finder.py file.txt ~/path/to/folder/ --nodb
 ```
 
-&#x2013;help
+`--help`
 - Displays help
 
 ## Limitations
 
 The PDF files must be searchable PDFs. If not, try to use optical character recognition to make a searchable PDF before using Reference Finder. The PDF file format has a broad specification and is not designed for data exchange. This makes PDFs particularly hard to read. Reference Finder used PyPDF2, and if that fails, PDFMiner, and may output a message that the PDF is not readable. Even then, some PDFs will return unreadable garbage (Of the 70 PDFs that I tested, 4 were not readable at all). This will hopefully be addressed in a later version. A possible approach would be to read XML/ePub versions of the articles as XML is machine readable, with the hopes that XML will surpass PDF as the predominant format for online publications.
 
-False negatives
+#False negatives
 
 Supporting information that is in a table or graph will probably not be read and matched.
