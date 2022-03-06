@@ -1,0 +1,8 @@
+en-core-web-md @ https://github.com/explosion/spacy-models/releases/download/en_core_web_md-3.2.0/en_core_web_md-3.2.0-py3-none-any.whl
+nltk==3.6.7
+pathos==0.2.8
+pdfminer.six==20211012
+PyPDF2==1.26.0
+python-docx==0.8.11
+spacy==3.2.1
+tqdm==4.62.3
