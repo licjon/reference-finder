@@ -33,6 +33,10 @@ class Reference:
         # A list of str, each item a word in the pdf.
         self.words = word_tokenize(self.string)
 
+        # Generator for sentences in pdf manuscript
+        self.words_ms = (
+            word_tokenize(word) for word in self.sentences)
+
         # Same thing but without % to match text files.
         self.words_sans_percent = (word.strip('%') for word in self.words)
 
@@ -57,6 +61,11 @@ class ReferenceMiner:
         self.word_sentences = (
             word_tokenize(word) for word in self.sentences)
         self.words = word_tokenize(self.string)
+
+        # Generator for sentences in pdf manuscript
+        self.words_ms = (
+            word_tokenize(word) for word in self.sentences)
+        
         self.words_sans_percent = (word.strip('%') for word in self.words)
         self.embeddings = (
             config.nlp(sentence).vector for sentence in self.sentences)

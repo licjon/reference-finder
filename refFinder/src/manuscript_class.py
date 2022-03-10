@@ -14,7 +14,7 @@ class Manuscript:
         self.sentences = sent_tokenize(self.string)
 
         # Generator of sentences, each sentence is a list of words.
-        self.words = (
+        self.words_ms = (
             word_tokenize(word) for word in self.sentences)
 
         # Generator of embeddings of the words for each sentence.

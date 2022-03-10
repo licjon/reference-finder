@@ -12,6 +12,7 @@ import os
 
 from pathlib import Path
 
+from create_pdf_class import create_pdf_class
 from manuscript_class import Manuscript
 from mydocument_class import MyDocument
 from reference_class import Reference, ReferenceMiner
@@ -63,6 +64,10 @@ def main():
 
     if ext == ".txt":
         manuscript = Manuscript(manuscript)
+    elif ext == ".pdf":
+        manuscript = create_pdf_class(manuscript)
+        # print(str(next(manuscript.embeddings)))
+        # print(str(manuscript.sentences[0]))
     else:
         manuscript = MyDocument(manuscript)
 

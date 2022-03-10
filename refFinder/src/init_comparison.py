@@ -16,7 +16,7 @@ def init_comparison(manuscript, no_save, no_db, files = None):
             "***OUTPUT OF COMPARISON OF MANUSCRIPT AND REFERENCE(S)*** \n \n")
 
     # list of list of string
-    manuscript_sentences = manuscript.words
+    manuscript_sentences = manuscript.words_ms
     # word embeddings
     manuscript_embeddings = manuscript.embeddings
 
