@@ -2,7 +2,7 @@
 
  Reference Finder will compare each sentence in the manuscript to each reference and help you find which reference supports the sentence in the manuscript as well as provide sentences from each reference that are most likely to give support.
 
- Essentially, this program takes a text or docx file and compares each sentence to each sentence in multiple PDFs and returns information about what has matched in each PDF, such as:
+ Essentially, this program takes a text, docx, or PDF file and compares each sentence to each sentence in multiple PDFs and returns information about what has matched in each PDF, such as:
 
 - Total words matched
 
@@ -20,7 +20,7 @@
 
     3.  Cosine similarity
 
- The application I thought of for this program was to find supporting references for a manuscript, hence the name Reference Finder. The manuscript is the text file (.txt) or Word doc file (.docx). References are PDF files. But this can be used for any purpose that requires matching sentences in a text or word file to text in PDFs.
+ The application I thought of for this program was to find supporting references for a manuscript, hence the name Reference Finder. The manuscript is the text file (.txt), Word doc file (.docx), or a PDF. References are PDF files. But this can be used for any purpose that requires matching sentences in a text or word file to text in PDFs.
 
 ## How to run
 
@@ -32,7 +32,7 @@
 
 4. Then run `pip install -r requirements.txt`
 
-5. Your manuscript (txt or docx) and subdirectory of PDFs should be in the src directory but don't have to be.
+5. Your manuscript (txt, docx, or pdf) and subdirectory of PDFs should be in the src directory but don't have to be.
 
 6. cd into the src directory and run `python3 ref_finder.py file_name.txt path/to/pdf/folder/`. If your manuscript file is in another directory, then enter the path to the file (including the file name) instead of just the file name.
 
