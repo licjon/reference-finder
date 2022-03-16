@@ -66,8 +66,6 @@ def main():
         manuscript = Manuscript(manuscript)
     elif ext == ".pdf":
         manuscript = create_pdf_class(manuscript)
-        # print(str(next(manuscript.embeddings)))
-        # print(str(manuscript.sentences[0]))
     else:
         manuscript = MyDocument(manuscript)
 
@@ -76,7 +74,7 @@ def main():
         files = glob.glob(os.path.join(refs_path, "*.pdf"))
 
     # With just the file, using stored refs: file
-    if not refs_path and refs_in_db and not no_db and not no_db:
+    if not refs_path and refs_in_db and not no_db:
         init_comparison(manuscript, no_save, no_db)
     # With new refs (that are stored if not in database) that may
     # or may not be in the database: file path [--nosave --nodb]
