@@ -8,7 +8,7 @@ from get_refs import get_refs
 from reference_class import Reference, ReferenceMiner
 
 
-def init_comparison(manuscript, no_save, no_db, files = None):
+def init_comparison(manuscript, no_save, no_db, files=None):
     """Initialize comparison."""
     # Start writing file.
     with open("output.txt", 'w') as output:

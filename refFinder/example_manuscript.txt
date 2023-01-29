@@ -1,0 +1,10 @@
+The Jaccard index, also known as the Jaccard similarity coefficient, is a measure to evaluate similarity between 2 finite sample sets.
+
+
+All of the neural networks were trained with a batch size of 256 on the Tiony-Imagenet dataset and a batch size of 512 for 500 epochs on CIFAR-10 and CIFAR-100 datasets.
+
+
+Abductive reasoning is at the core of human understanding.
+
+
+Performance prediction estimates the performance of a system without running it.
